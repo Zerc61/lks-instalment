@@ -25,6 +25,9 @@ Route::prefix('v1')->group(function () {
             Route::middleware('auth:sanctum', 'admin')->prefix('admin')->group(function() {
                 Route::get('/applications', [ApplicationController::class, 'adminIndex']);
                 Route::patch('/applications/{id}', [ApplicationController::class, 'updateStatus']);
+
+                Route::get('/validations', [ValidationController::class, 'adminIndex']);
+                Route::patch('/validations/{id}', [ValidationController::class, 'updateStatus']);
             });
 
             Route::get('/me', function(Request $request) {

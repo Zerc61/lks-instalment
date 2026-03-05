@@ -57,10 +57,25 @@ class ValidationController extends Controller
         ]);
     }
 
-    public function updateAdmin(Request $request) {
+    public function updateStatus(Request $request, $id) {
         $request->validate([
             'status' => 'required|in:accepted,rejected',
             'validator_notes' => 'nullable|string',
+        ]);
+
+        $validation = Validation::findOrFail($id);
+
+        if($validation->status !== 'pending') {
+            return response()->json([
+                'message' => 'validation already processed'
+            ], 400);
+        }
+
+        $validation->update([$request->all()]);
+
+        return response()->json([
+            'message' => 'validation updated',
+            'validation' => $validation,
         ]);
     }
 }
