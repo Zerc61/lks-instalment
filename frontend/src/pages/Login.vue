@@ -1,9 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 import api from '@/services/api'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
 
 const form = ref({
   idCard: "",
@@ -17,9 +14,27 @@ const login = async () => {
       password: form.value.password
     })
 
+    // 1. Simpan Token
     const token = res.data.token
     localStorage.setItem('token', token)
-    router.push('/dashboard')
+
+    // 2. Ambil data role dari response API
+    // Catatan: Sesuaikan 'res.data.user.role' dengan struktur JSON asli dari API kamu.
+    // Kadang posisinya ada di 'res.data.role' atau 'res.data.user.role'
+    const role = res.data.user?.role || res.data.role;
+
+    // (Opsional) Simpan role di localStorage jika komponen lain butuh tahu siapa yang login
+    localStorage.setItem('role', role)
+
+    // 3. Redirect (Hard Refresh) berdasarkan Role
+    if (role === 'admin') {
+      window.location.href = '/admin/dashboard'
+    } else if (role === 'society') {
+      window.location.href = '/dashboard'
+    } else {
+      // Fallback jika role tidak dikenali
+      alert('Role tidak dikenali oleh sistem.')
+    }
 
   } catch (error) {
     alert('Login gagal, periksa kembali ID & Password Anda.')

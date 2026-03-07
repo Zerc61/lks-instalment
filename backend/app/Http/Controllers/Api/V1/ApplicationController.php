@@ -87,6 +87,7 @@ class ApplicationController extends Controller
         ]);
 
         $application = Application::findOrFail($id);
+        
 
         $application->update($request->all());
 
